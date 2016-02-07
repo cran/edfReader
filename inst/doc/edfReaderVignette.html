@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Jan Vis" />
+
+<meta name="date" content="2016-02-07" />
+
+<title>edfReader vignette</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<link href="data:text/css,body%20%7B%0A%20%20background%2Dcolor%3A%20%23fff%3B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20max%2Dwidth%3A%20700px%3B%0A%20%20overflow%3A%20visible%3B%0A%20%20padding%2Dleft%3A%202em%3B%0A%20%20padding%2Dright%3A%202em%3B%0A%20%20font%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20font%2Dsize%3A%2014px%3B%0A%20%20line%2Dheight%3A%201%2E35%3B%0A%7D%0A%0A%23header%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0A%0A%23TOC%20%7B%0A%20%20clear%3A%20both%3B%0A%20%20margin%3A%200%200%2010px%2010px%3B%0A%20%20padding%3A%204px%3B%0A%20%20width%3A%20400px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20border%2Dradius%3A%205px%3B%0A%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20font%2Dsize%3A%2013px%3B%0A%20%20line%2Dheight%3A%201%2E3%3B%0A%7D%0A%20%20%23TOC%20%2Etoctitle%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20font%2Dsize%3A%2015px%3B%0A%20%20%20%20margin%2Dleft%3A%205px%3B%0A%20%20%7D%0A%0A%20%20%23TOC%20ul%20%7B%0A%20%20%20%20padding%2Dleft%3A%2040px%3B%0A%20%20%20%20margin%2Dleft%3A%20%2D1%2E5em%3B%0A%20%20%20%20margin%2Dtop%3A%205px%3B%0A%20%20%20%20margin%2Dbottom%3A%205px%3B%0A%20%20%7D%0A%20%20%23TOC%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dleft%3A%20%2D2em%3B%0A%20%20%7D%0A%20%20%23TOC%20li%20%7B%0A%20%20%20%20line%2Dheight%3A%2016px%3B%0A%20%20%7D%0A%0Atable%20%7B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dcolor%3A%20%23DDDDDD%3B%0A%20%20border%2Dstyle%3A%20outset%3B%0A%20%20border%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0A%20%20border%2Dwidth%3A%202px%3B%0A%20%20padding%3A%205px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%20%20line%2Dheight%3A%2018px%3B%0A%20%20padding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0A%20%20border%2Dleft%2Dstyle%3A%20none%3B%0A%20%20border%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Ap%20%7B%0A%20%20margin%3A%200%2E5em%200%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20padding%3A%200%2E25em%200%2E75em%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20border%2Dstyle%3A%20solid%3B%0A%20%20border%3A%20none%3B%0A%20%20border%2Dtop%3A%201px%20solid%20%23777%3B%0A%20%20margin%3A%2028px%200%3B%0A%7D%0A%0Adl%20%7B%0A%20%20margin%2Dleft%3A%200%3B%0A%7D%0A%20%20dl%20dd%20%7B%0A%20%20%20%20margin%2Dbottom%3A%2013px%3B%0A%20%20%20%20margin%2Dleft%3A%2013px%3B%0A%20%20%7D%0A%20%20dl%20dt%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%7D%0A%0Aul%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%20%20ul%20li%20%7B%0A%20%20%20%20list%2Dstyle%3A%20circle%20outside%3B%0A%20%20%7D%0A%20%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dbottom%3A%200%3B%0A%20%20%7D%0A%0Apre%2C%20code%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20color%3A%20%23333%3B%0A%7D%0Apre%20%7B%0A%20%20white%2Dspace%3A%20pre%2Dwrap%3B%20%20%20%20%2F%2A%20Wrap%20long%20lines%20%2A%2F%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20margin%3A%205px%200px%2010px%200px%3B%0A%20%20padding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Acode%20%7B%0A%20%20font%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0A%20%20font%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0A%20%20padding%3A%202px%200px%3B%0A%7D%0A%0Adiv%2Efigure%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0A%20%20background%2Dcolor%3A%20%23FFFFFF%3B%0A%20%20padding%3A%202px%3B%0A%20%20border%3A%201px%20solid%20%23DDDDDD%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20margin%3A%200%205px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%20%20font%2Dsize%3A%2035px%3B%0A%20%20line%2Dheight%3A%2040px%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20border%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20padding%2Dbottom%3A%202px%3B%0A%20%20font%2Dsize%3A%20145%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20border%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20font%2Dsize%3A%20120%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0A%20%20margin%2Dleft%3A%208px%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Ah5%2C%20h6%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23ccc%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Aa%20%7B%0A%20%20color%3A%20%230033dd%3B%0A%20%20text%2Ddecoration%3A%20none%3B%0A%7D%0A%20%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20%236666ff%3B%20%7D%0A%20%20a%3Avisited%20%7B%0A%20%20%20%20color%3A%20%23800080%3B%20%7D%0A%20%20a%3Avisited%3Ahover%20%7B%0A%20%20%20%20color%3A%20%23BB00BB%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%0A%2F%2A%20Class%20described%20in%20https%3A%2F%2Fbenjeffrey%2Ecom%2Fposts%2Fpandoc%2Dsyntax%2Dhighlighting%2Dcss%0A%20%20%20Colours%20from%20https%3A%2F%2Fgist%2Egithub%2Ecom%2Frobsimmons%2F1172277%20%2A%2F%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Keyword%20%2A%2F%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%2F%2A%20DataType%20%2A%2F%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%2F%2A%20DecVal%20%28decimal%20values%29%20%2A%2F%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20BaseN%20%2A%2F%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Float%20%2A%2F%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Char%20%2A%2F%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20String%20%2A%2F%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%2F%2A%20Comment%20%2A%2F%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%2F%2A%20OtherToken%20%2A%2F%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20AlertToken%20%2A%2F%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Function%20calls%20%2A%2F%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%2F%2A%20ErrorTok%20%2A%2F%0A%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div id="header">
+<h1 class="title">edfReader vignette</h1>
+<h4 class="author"><em>Jan Vis</em></h4>
+<h4 class="date"><em>2016-02-07</em></h4>
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The <a href="http://www.edfplus.info">European Data Format</a> (EDF) is a simple and flexible format for exchange and storage of multichannel biological and physical signals. It was developed by a few European ‘medical’ engineers who first met at the 1987 international Sleep Congress in Copenhagen. See <a href="http://www.edfplus.info/" class="uri">http://www.edfplus.info/</a></p>
+<p>The original EDF specification has been expanded in several ways. EDF+ supports the addition of annotations and non-continuous recordings. The <a href="http://www.biosemi.com/faq/file_format.htm">BioSemi Data Format</a> BDF format uses 24 bits per sample (in stead of the 16 bits per sample in EDF). And <a href="http://www.teuniz.net/edfbrowser/bdfplus%20format%20description.html">BDF+</a> is an EDF+ like extension of BDF.</p>
+<p>This packages supports all these variants.</p>
+<p>Both EDF and BDF files consist of an header followed by one or more data records with the recorded signals, either ordinary signals or annotation signals.</p>
+<p>This package follows this structure by providing two basic functions: readEdfHeader and readEdfSignals (see the help pages for details)</p>
+<p>The examples below are based on the following two files:</p>
+<ul>
+<li><p>CFile an EDF+ file with a continuous recording of 11 ordinary signals and one annotation signal</p></li>
+<li><p>DFile a BDF+ file with a discontinuous recording of 11 ordinary signals and one annotation signal</p></li>
+</ul>
+<p>Both files are derived from the “test_generator_2” test files from <a href="http://www.teuniz.net/edf_bdf_testfiles" class="uri">http://www.teuniz.net/edf_bdf_testfiles</a></p>
+<pre class="sourceCode r"><code class="sourceCode r">libDir &lt;-<span class="st"> </span><span class="kw">system.file</span> (<span class="st">&quot;extdata&quot;</span>, <span class="dt">package=</span><span class="st">&quot;edfReader&quot;</span>)
+CFile &lt;-<span class="st"> </span><span class="kw">paste</span> (libDir, <span class="st">'/edfPlusC.edf'</span>, <span class="dt">sep=</span><span class="st">''</span>) <span class="co"># a continuously recorded EDF file</span>
+DFile &lt;-<span class="st"> </span><span class="kw">paste</span> (libDir, <span class="st">'/bdfPlusD.bdf'</span>, <span class="dt">sep=</span><span class="st">''</span>) <span class="co"># discontinuously recorded BDF file</span></code></pre>
+</div>
+<div id="edf-headers-objects" class="section level1">
+<h1>EDF headers objects</h1>
+<div id="introduction-1" class="section level2">
+<h2>Introduction</h2>
+<p>The readEdfHeader function returns a list of class ‘ebdfHeader’ with all the data from the EDF or BDF file header. Part of this list is a data frame of class ‘ebdfSHeader’ which contains the signal headers.</p>
+</div>
+<div id="the-ebdfheader" class="section level2">
+<h2>The ebdfHeader</h2>
+<p>A file header can be read with readEdfHeader()</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span> (edfReader)
+CHdr  &lt;-<span class="st"> </span><span class="kw">readEdfHeader</span> (CFile)            
+DHdr  &lt;-<span class="st"> </span><span class="kw">readEdfHeader</span> (DFile)                  </code></pre>
+<p>Summaries of the header data can be shown with the S3 summary () and print() functions</p>
+<pre class="sourceCode r"><code class="sourceCode r">CHdr</code></pre>
+<pre><code>##  Patient               : X X X X 
+##  RecordingId           : Startdate 10-DEC-2009 X X test_generator 
+##  StartTime             : 2009-12-10 12:44:02 
+##  Continuous recording  : TRUE 
+##  Signal labels         : squarewave ramp pulse ECG noise sine 1 Hz sine 8 Hz sine 8.5 Hz sine 15 Hz sine 17 Hz sine 50 Hz EDF Annotations</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span> (DHdr)</code></pre>
+<pre><code>##  File name             : /Library/Frameworks/R.framework/Versions/3.2/Resources/library/edfReader/extdata/bdfPlusD.bdf 
+##  File type             : BDF+ 
+##  Version               : &quot;255&quot;BIOSEMI 
+##  Patient               : X X X X 
+##  RecordingId           : Startdate 10-DEC-2009 X X test_generator 
+##  StartTime             : 2009-12-10 12:45:54 
+##  Continuous recording  : FALSE 
+##  Recording period      : 10 sec (= 00:00:10) 
+##  Ordinary signals      : 11 
+##  Annotation signals    : 1 
+##  Signal labels         : squarewave ramp pulse ECG noise sine 1 Hz sine 8 Hz sine 8.5 Hz sine 15 Hz sine 17 Hz sine 50 Hz BDF Annotations</code></pre>
+</div>
+<div id="the-ebdfsheader" class="section level2">
+<h2>The ebdfSHeader</h2>
+<p>Summaries of the signal header data can be shown with the S3 print() and summary () functions.</p>
+<pre class="sourceCode r"><code class="sourceCode r">CHdr$sHeader</code></pre>
+<pre><code>##  Signal labels         : squarewave ramp pulse ECG noise sine 1 Hz sine 8 Hz sine 8.5 Hz sine 15 Hz sine 17 Hz sine 50 Hz EDF Annotations</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span> (DHdr$sHeader)</code></pre>
+<pre><code>##    signal           label transducer sampleRate preFilter
+## 1       1      squarewave                   200          
+## 2       2            ramp                   200          
+## 3       3           pulse                   200          
+## 4       4             ECG                   200          
+## 5       5           noise                   200          
+## 6       6       sine 1 Hz                   200          
+## 7       7       sine 8 Hz                   200          
+## 8       8     sine 8.5 Hz                   200          
+## 9       9      sine 15 Hz                   200          
+## 10     10      sine 17 Hz                   200          
+## 11     11      sine 50 Hz                   200          
+## 12     12 BDF Annotations                    NA</code></pre>
+</div>
+</div>
+<div id="edf-signal-objects" class="section level1">
+<h1>EDF signal objects</h1>
+<div id="introduction-2" class="section level2">
+<h2>Introduction</h2>
+<p>The readEdfSignals function with simplify=FALSE returns a list of class ‘ebdfSignals’ with the signals selected from the EDF / BDF file.</p>
+<p>The signals in this list are of the following :</p>
+<ul>
+<li><p>ordinary continuous signals<br />of class ebdfCSignal</p></li>
+<li><p>ordinary discontinuous signals<br />of class ebdfFSignal</p></li>
+<li><p>annotation signals<br />of class ebdfASignal</p></li>
+</ul>
+</div>
+<div id="the-list-of-signals" class="section level2">
+<h2>The list of signals</h2>
+<p>The signals in an EDF or BDF file can be read with the readEdfSignals function.</p>
+<pre class="sourceCode r"><code class="sourceCode r">CSignals &lt;-<span class="st"> </span><span class="kw">readEdfSignals</span> (CHdr)
+DSignals &lt;-<span class="st"> </span><span class="kw">readEdfSignals</span> (DHdr)</code></pre>
+<p>NOTE In case only one signal was read the list of one will be simplified to this singe object. This can be prevented by using the ‘simplify=FALSE’ parameter. So readEdfSignals (CHdr, signals=7, simplify=FALSE)[[1]] and readEdfSignals (CHdr, signals=7) will return the same object. If required the reading can be restricted to a specific number of signals and/or a particular period.</p>
+<p>The signals are then identified by their label, signal number or signal type (‘Ordinary’ or ‘Annotations’).</p>
+<pre class="sourceCode r"><code class="sourceCode r">someCSignalsPeriod &lt;-<span class="st"> </span><span class="kw">readEdfSignals</span> (CHdr, <span class="dt">signals=</span><span class="kw">c</span>(<span class="dv">3</span>, <span class="st">&quot;5&quot;</span>, <span class="st">&quot;sine 8.5 Hz&quot;</span>), <span class="dt">from=</span><span class="fl">5.1</span>, <span class="dt">till=</span><span class="dv">18</span>)
+annoDSignalsPeriod &lt;-<span class="st"> </span><span class="kw">readEdfSignals</span> (DHdr, <span class="dt">signals=</span><span class="st">'Annotations'</span>, <span class="dt">from=</span><span class="fl">5.1</span>, <span class="dt">till=</span><span class="dv">18</span>)</code></pre>
+<p>Note that the period read will be - apart from rounding errors - [10.1,45). See the section “Samples, time and periods” for details.</p>
+<p>NOTE In this case DFile is an BDF file with one annotation signal. So readEdfSignals (DHdr, signals=‘Annotations’) will return the same object as readEdfSignals (DHdr, signals=‘Annotations’, simplify=FALSE)[[‘BDF Annotations’]]</p>
+<p>Summaries of the list of signals can be shown with the S3 print() and summary () functions.</p>
+<pre class="sourceCode r"><code class="sourceCode r">someCSignalsPeriod</code></pre>
+<pre><code>## Continuous recording  TRUE 
+## Recorded period       20 
+## Recording segment     from 5.1 sec (= 00:00:05.1) till 18 sec (= 00:00:18) 
+## bits per sample       16 
+## Ordinary signals: 
+##   signal       label transducer sampleRate samples preFilter
+## 1      3       pulse                   200    2580          
+## 2      5       noise                   200    2580          
+## 3      8 sine 8.5 Hz                   200    2580</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span> (DSignals)</code></pre>
+<pre><code>## Continuous recording  FALSE 
+## Total recording time  20 
+## Recorded period       10 
+## Recording segment     whole recording 
+## bits per sample       24 
+## Annotation signal: 
+##   signal recordStartAnnotations otherAnnotations
+## 1     12                      0                1
+## Ordinary signals: 
+##    signal       label transducer sampleRate samples preFilter
+## 1       1  squarewave                   200    4000          
+## 2       2        ramp                   200    4000          
+## 3       3       pulse                   200    4000          
+## 4       4         ECG                   200    4000          
+## 5       5       noise                   200    4000          
+## 6       6   sine 1 Hz                   200    4000          
+## 7       7   sine 8 Hz                   200    4000          
+## 8       8 sine 8.5 Hz                   200    4000          
+## 9       9  sine 15 Hz                   200    4000          
+## 10     10  sine 17 Hz                   200    4000          
+## 11     11  sine 50 Hz                   200    4000</code></pre>
+<p>NOTE In case only one signal was read the list of one will be simplified to this singe object. This can be prevented by using the ‘simplify=FALSE’ parameter. So readEdfSignals (CHdr, signals=7, simplify=FALSE)[[1]] and readEdfSignals (CHdr, signals=7) will return the same object.</p>
+</div>
+<div id="ordinary-signals-continuously-recorded" class="section level2">
+<h2>Ordinary signals, continuously recorded</h2>
+<p>Summaries of a continuously recorded ordinary signal can be shown with the S3 print() and summary () functions.</p>
+<pre class="sourceCode r"><code class="sourceCode r">someCSignalsPeriod[[<span class="dv">1</span>]]</code></pre>
+<pre><code>##  Signal number          3 
+##  Label                  pulse 
+##  Continuous recording   TRUE 
+##  Recorded period        20 sec (= 00:00:20) 
+##  Recording segment      from 5.1 sec (= 00:00:05.1) till 18 sec (= 00:00:18) 
+##  Number of samples      2580 
+##  Sample rate            200 
+##  Transducer              
+##  Range                  -1000 : 1000 uV 
+##  Prefilter</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span> (CSignals$pulse)         <span class="co"># a signals has its label as its name</span></code></pre>
+<pre><code>##  Signal number          3 
+##  Label                  pulse 
+##  Continuous recording   TRUE 
+##  Recorded period        20 sec (= 00:00:20) 
+##  Recording segment      whole recording 
+##  Number of samples      4000 
+##  Sample rate            200 
+##  Transducer              
+##  Range                  -1000 : 1000 uV 
+##  Prefilter               
+##  Signal summary:</code></pre>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##  0.01526  0.01526  0.01526  2.01500  0.01526 99.99000</code></pre>
+</div>
+<div id="ordinary-signals-not-continuously-recorded" class="section level2">
+<h2>Ordinary signals, not continuously recorded</h2>
+<p>Ordinary signals that are not continuously recorded can be read in two different ways:</p>
+<ul>
+<li><p>as a ‘continuous’ sequence of samples with ‘NA’ values filling the gaps (use ‘fragments=FALSE’, the default).<br />The result is of class ebdfCSignal (the same as for a continuously recorded signal).</p></li>
+<li><p>as a number fragments of continuously recorded parts (use ‘fragments=TRUE’)<br />The result is of class ebdfFSignal.</p></li>
+</ul>
+<p>The latter method will use a more complex data structure, the first may result in a (much too) huge object.</p>
+<pre class="sourceCode r"><code class="sourceCode r">CDSignals &lt;-<span class="st"> </span><span class="kw">readEdfSignals</span> (DHdr, <span class="dt">from=</span><span class="fl">5.1</span>, <span class="dt">till=</span><span class="dv">18</span>)
+FDSignals &lt;-<span class="st"> </span><span class="kw">readEdfSignals</span> (DHdr, <span class="dt">fragments=</span><span class="ot">TRUE</span>)</code></pre>
+<p>The objects of class ebdfCSignal are summarised in the same way as continuously recorded signals.</p>
+<pre class="sourceCode r"><code class="sourceCode r">CDSignals[[<span class="dv">8</span>]]</code></pre>
+<pre><code>##  Signal number          8 
+##  Label                  sine 8.5 Hz 
+##  Continuous recording   FALSE 
+##  Total recording time   20 sec (= 00:00:20) 
+##  Recorded period        10 sec (= 00:00:10) 
+##  Recording segment      from 5.1 sec (= 00:00:05.1) till 18 sec (= 00:00:18) 
+##  Number of samples      2580 
+##  Sample rate            200 
+##  Transducer              
+##  Range                  -1000 : 1000 uV 
+##  Prefilter</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span> (CDSignals$<span class="st">`</span><span class="dt">sine 8.5 Hz</span><span class="st">`</span>)      <span class="co"># note the &quot;`&quot; quotes for a name with spaces.</span></code></pre>
+<pre><code>##  Signal number          8 
+##  Label                  sine 8.5 Hz 
+##  Continuous recording   FALSE 
+##  Total recording time   20 sec (= 00:00:20) 
+##  Recorded period        10 sec (= 00:00:10) 
+##  Recording segment      from 5.1 sec (= 00:00:05.1) till 18 sec (= 00:00:18) 
+##  Number of samples      2580 
+##  Sample rate            200 
+##  Transducer              
+##  Range                  -1000 : 1000 uV 
+##  Prefilter               
+##  Signal summary:</code></pre>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+## -100.000  -70.990   -3.141   -1.537   68.450  100.000     1200</code></pre>
+<p>Summaries of a not continuously recorded ordinary signal stored in fragments can be shown with the S3 print() and summary () functions.</p>
+<pre class="sourceCode r"><code class="sourceCode r">FDSignals[[<span class="dv">8</span>]]</code></pre>
+<pre><code>##  Signal number          8 
+##  Label                  sine 8.5 Hz 
+##  Continuous recording   FALSE 
+##  Total recording time   20 sec (= 00:00:20) 
+##  Recorded period        10 sec (= 00:00:10) 
+##  Recording segment      whole recording 
+##  Number of fragments    8 
+##  Sample rate            200 
+##  Transducer              
+##  Range                  -1000 : 1000 uV 
+##  Prefilter</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span> (FDSignals$<span class="st">`</span><span class="dt">sine 8.5 Hz</span><span class="st">`</span>) </code></pre>
+<pre><code>##  Signal number          8 
+##  Label                  sine 8.5 Hz 
+##  Continuous recording   FALSE 
+##  Total recording time   20 sec (= 00:00:20) 
+##  Recorded period        10 sec (= 00:00:10) 
+##  Recording segment      whole recording 
+##  Number of fragments    8 
+##  Sample rate            200 
+##  Transducer              
+##  Range                  -1000 : 1000 uV 
+##  Prefilter               
+##   fragment start samples    Min. X1st.Qu.     Median       Mean X3rd.Qu.
+## 1        1     0     200  -99.89   -65.24  9.4110000  3.7230000    71.81
+## 2        2     3     200 -100.00   -71.81 -9.4110000 -3.7220000    65.24
+## 3        3     5     200 -100.00   -71.81 -9.4110000 -3.7220000    65.24
+## 4        4     7     200 -100.00   -71.81 -9.4110000 -3.7220000    65.24
+## 5        5    10     400 -100.00   -70.71  0.0000596  0.0000596    70.71
+## 6        6    13     200 -100.00   -71.81 -9.4110000 -3.7220000    65.24
+## 7        7    16     400 -100.00   -70.71  0.0000596  0.0000596    70.71
+## 8        8    19     200 -100.00   -71.81 -9.4110000 -3.7220000    65.24
+##     Max.
+## 1 100.00
+## 2  99.89
+## 3  99.89
+## 4  99.89
+## 5 100.00
+## 6  99.89
+## 7 100.00
+## 8  99.89
+## All fragments:
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -100.000  -71.810   -3.141   -1.489   69.590  100.000</code></pre>
+</div>
+<div id="annotation-signals" class="section level2">
+<h2>Annotation signals</h2>
+<p>Summaries of an annotation signal (ASignal) can be shown with the S3 print() and summary () functions.</p>
+<pre class="sourceCode r"><code class="sourceCode r">CSignals$<span class="st">`</span><span class="dt">EDF Annotations</span><span class="st">`</span></code></pre>
+<pre><code>##  Signal number             12 
+##  Signal label              EDF Annotations 
+##  Recorded period           20 sec (= 00:00:20) 
+##  Recording segment         whole recording 
+##  Record start annotations  0 
+##  Other annotations         2</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(annoDSignalsPeriod)</code></pre>
+<pre><code>##  Signal number             12 
+##  Signal label              BDF Annotations 
+##  Recorded period           10 sec (= 00:00:10) 
+##  Recording segment         from 5.1 sec (= 00:00:05.1) till 18 sec (= 00:00:18) 
+##  Record start annotations  0 
+##  Other annotations         0</code></pre>
+<p>The “Record start annotations = 0” indicates that the record start annotations were not included, i.e. readEdfSignals was used with the parameter recordStartTimes = FALSE.<br />‘Other annotations’ shows the number of ‘real’ annotations.</p>
+</div>
+</div>
+<div id="samples-time-and-periods." class="section level1">
+<h1>Samples, time and periods.</h1>
+<div id="samples-and-time" class="section level2">
+<h2>Samples and time</h2>
+<p>As usual, a recording starts at time 0 with sample 1.</p>
+<p>Consequently sample n will be at time (n-1)/sRate, where sRate denotes the sample rate.</p>
+</div>
+<div id="samples-and-periods" class="section level2">
+<h2>Samples and periods</h2>
+<p>Apart from rounding errors, a from - till period in readEdfSignals will be the period [from,till), i.e. starting at from and up to be but not including till.</p>
+<p>This may sound strange, but this convention has the following properties</p>
+<ul>
+<li><p>the sample rate can be defined as the total number of samples divided by the total time</p></li>
+<li><p>or, more precise, any period which is a multiple of the sample period sPeriod will always contain the same number of samples<br />i.e. for any t ≥ 0, [t, t+n*sPeriod) will always contain n samples</p></li>
+<li><p>for any number of adjacent periods, the total number of samples will be always the sum of the samples in the individual periods.</p></li>
+<li><p>the first sample will be ceiling(from*sRate) + 1</p></li>
+<li><p>the last sample will be ceiling(till*sRate)</p></li>
+<li><p>with from=t and till=t, the empty set [t,t) corresponds to [ceiling(t<em>sRate) + 1, ceiling(t</em>sRate)] which is also empty.</p></li>
+</ul>
+</div>
+</div>
+<div id="object-details" class="section level1">
+<h1>Object details</h1>
+<div id="header-details" class="section level2">
+<h2>Header details</h2>
+<div id="header-attributes" class="section level3">
+<h3>Header attributes</h3>
+<p>The header data encompass the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span> (CHdr,  <span class="dt">max.level=</span><span class="dv">1</span>)</code></pre>
+<pre><code>## List of 16
+##  $ fileName      : chr &quot;/Library/Frameworks/R.framework/Versions/3.2/Resources/library/edfReader/extdata/edfPlusC.edf&quot;
+##  $ fileType      : chr &quot;EDF&quot;
+##  $ version       : chr &quot;0&quot;
+##  $ patient       : chr &quot;X X X X&quot;
+##  $ recordingId   : chr &quot;Startdate 10-DEC-2009 X X test_generator&quot;
+##  $ startTime     : POSIXlt[1:1], format: &quot;2009-12-10 12:44:02&quot;
+##  $ headerLength  : int 3328
+##  $ reserved      : chr &quot;EDF+C&quot;
+##  $ nRecords      : int 20
+##  $ recordDuration: num 1
+##  $ nSignals      : int 12
+##  $ recordedPeriod: num 20
+##  $ sampleBits    : num 16
+##  $ isPlus        : logi TRUE
+##  $ isContinuous  : logi TRUE
+##  $ sHeaders      :Classes 'ebdfSHeaders' and 'data.frame':   12 obs. of  15 variables:
+##  - attr(*, &quot;class&quot;)= chr &quot;ebdfHeader&quot;</code></pre>
+<p>The fields version, patient, recordingId, startTime, headerLength, reserved, nRecords, recordDuration, and nSignals are from the file header. The others are derived, but see below for sHeaders.</p>
+</div>
+<div id="signal-header-attributes" class="section level3">
+<h3>Signal header attributes</h3>
+<p>The signal header data encompass the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span> (CHdr$sHeader, <span class="dt">max.level=</span><span class="dv">1</span>)</code></pre>
+<pre><code>## Classes 'ebdfSHeaders' and 'data.frame': 12 obs. of  15 variables:
+##  $ label           : chr  &quot;squarewave&quot; &quot;ramp&quot; &quot;pulse&quot; &quot;ECG&quot; ...
+##  $ transducerType  : chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...
+##  $ physicalDim     : chr  &quot;uV&quot; &quot;uV&quot; &quot;uV&quot; &quot;uV&quot; ...
+##  $ physicalMin     : num  -1000 -1000 -1000 -1000 -1000 -1000 -1000 -1000 -1000 -1000 ...
+##  $ physicalMax     : num  1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 ...
+##  $ digitalMin      : int  -32768 -32768 -32768 -32768 -32768 -32768 -32768 -32768 -32768 -32768 ...
+##  $ digitalMax      : int  32767 32767 32767 32767 32767 32767 32767 32767 32767 32767 ...
+##  $ preFilter       : chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...
+##  $ samplesPerRecord: int  200 200 200 200 200 200 200 200 200 200 ...
+##  $ reserved        : chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...
+##  $ gain            : num  0.0305 0.0305 0.0305 0.0305 0.0305 ...
+##  $ offset          : num  0.0153 0.0153 0.0153 0.0153 0.0153 ...
+##  $ sRate           : num  200 200 200 200 200 200 200 200 200 200 ...
+##  $ isAnnotation    : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ sLength         : int  4000 4000 4000 4000 4000 4000 4000 4000 4000 4000 ...</code></pre>
+<p>The fields label, transducerType, physicalDim, physicalMin, physicalMax, digitalMin, digitalMax, preFilter, samplesPerRecord, and reserved are from the file header. The others are derived. Gain and offset are used to map the digital sample values to the range of physical values.</p>
+<p>For annotation signals the only relevant fields are “label” which must have the value “EDF Annotations” (or “BDF Annotations”) and “samplesPerRecord”.</p>
+</div>
+</div>
+<div id="signal-details" class="section level2">
+<h2>Signal details</h2>
+<div id="ordinary-signal-objects-of-class-ebdfcsignal" class="section level3">
+<h3>Ordinary signal objects of class ebdfCSignal</h3>
+<p>The data for ordinary signal objects of class ebdfCSignal encompass the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(CSignals$pulse, <span class="dt">max.level=</span><span class="dv">1</span>) </code></pre>
+<pre><code>## List of 15
+##  $ signalNumber  : int 3
+##  $ label         : chr &quot;pulse&quot;
+##  $ isContinuous  : logi TRUE
+##  $ from          : num 0
+##  $ till          : num Inf
+##  $ start         : num 0
+##  $ fromSample    : num 1
+##  $ transducerType: chr &quot;&quot;
+##  $ sampleBits    : num 16
+##  $ sRate         : num 200
+##  $ range         : chr &quot;-1000 : 1000 uV&quot;
+##  $ preFilter     : chr &quot;&quot;
+##  $ signal        : num [1:4000] 99.9924 99.9924 99.9924 99.9924 0.0153 ...
+##  $ recordedPeriod: num 20
+##  $ totalPeriod   : num 20
+##  - attr(*, &quot;class&quot;)= chr &quot;ebdfCSignal&quot;</code></pre>
+<p>The attributes signalNumber, label, isContinuous, transducerType, sampleBits, sRate, range, preFilter, recordedPeriod and totalPeriod are (derived) from the header data.</p>
+<p>For a continuously recorded signal the totalPeriod is equal to the recordedPeriod.</p>
+<p>The attributes from and till contain the values of the corresponding actual readEdfSignals parameters. The default values are 0 and Inf.</p>
+<p>The attributes start and fromSample contains the sample time and number for the first sample in the from-till period. They are calculated as follows: from = max (0, from)<br /> fromSample = ceiling (sRate * from) + 1 start = (fromSample - 1) / sRate</p>
+<p>The signal attribute contains the sample data from the EDF / BDF data records. If read with the readEdfSignals parameter physical=TRUE, the default, the digital sample values are mapped to physical values. With physical=FALSE, signals contains the digital sample values.</p>
+<p>The physical values are calculated as follows:<br /> physicalValue = a * digitalValue + b,<br /> with: a = (physicalMax - physicalMin) / (digitalMax - digitalMin)<br /> b = physicalMax - a* digitalMax</p>
+</div>
+<div id="ordinary-signal-objects-of-class-ebdffsignal" class="section level3">
+<h3>Ordinary signal objects of class ebdfFSignal</h3>
+<p>The data for ordinary signal objects of class ebdfFSignal encompass the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(FDSignals$<span class="st">`</span><span class="dt">sine 8.5 Hz</span><span class="st">`</span>, <span class="dt">max.level=</span><span class="dv">1</span>) </code></pre>
+<pre><code>## List of 15
+##  $ signalNumber  : int 8
+##  $ label         : chr &quot;sine 8.5 Hz&quot;
+##  $ isContinuous  : logi FALSE
+##  $ from          : num 0
+##  $ till          : num Inf
+##  $ start         : num 0
+##  $ fromSample    : num 1
+##  $ transducerType: chr &quot;&quot;
+##  $ sampleBits    : num 24
+##  $ sRate         : num 200
+##  $ range         : chr &quot;-1000 : 1000 uV&quot;
+##  $ preFilter     : chr &quot;&quot;
+##  $ fragments     :List of 8
+##  $ recordedPeriod: num 10
+##  $ totalPeriod   : num 20
+##  - attr(*, &quot;class&quot;)= chr &quot;ebdfFSignal&quot;</code></pre>
+<p>For the attributes signalNumber, label, isContinuous, from, till, start, fromSample, transducerType, sampleBits, sRate, range, preFilter, recordedPeriod and totalPeriod see the previous section.</p>
+<p>For a not continuously recorded signal the total period equals the start of the last data record plus its duration.</p>
+<p>The fragments attribute contains the list of recorded fragments.</p>
+</div>
+<div id="signal-fragment-data" class="section level3">
+<h3>Signal fragment data</h3>
+<p>The data of a signal fragment in objects of class ebdfFSignal encompass the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(FDSignals$<span class="st">`</span><span class="dt">sine 8.5 Hz</span><span class="st">`</span>$fragments[[<span class="dv">1</span>]], <span class="dt">max.level=</span><span class="dv">1</span>) </code></pre>
+<pre><code>## List of 3
+##  $ start     : num 0
+##  $ fromSample: num 1
+##  $ signal    : num [1:200] 26.4 50.9 71.8 87.6 97.2 ...</code></pre>
+<p>The fromSample contains the sample number of the first sample in this fragment (as if it were a continuous recording). The start attribute the sample time for this sample.</p>
+<p>The signal contains the fragment’s sample values. These may be physical values (the default) or digital values (see above).</p>
+</div>
+<div id="annotation-signals-1" class="section level3">
+<h3>Annotation signals</h3>
+<p>The data for annotation signal objects of class ebdfASignal encompass the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(CSignals$<span class="st">`</span><span class="dt">EDF Annotations</span><span class="st">`</span>, <span class="dt">max.level=</span><span class="dv">1</span>) </code></pre>
+<pre><code>## List of 8
+##  $ signalNumber  : int 12
+##  $ label         : chr &quot;EDF Annotations&quot;
+##  $ isContinuous  : logi TRUE
+##  $ from          : num 0
+##  $ till          : num Inf
+##  $ annotations   :'data.frame':  2 obs. of  5 variables:
+##  $ recordedPeriod: num 20
+##  $ totalPeriod   : num 20
+##  - attr(*, &quot;class&quot;)= chr &quot;ebdfASignal&quot;</code></pre>
+<p>For the attributes signalNumber, label, isContinuous, from, till, recordedPeriod and totalPeriod see the section for objects of class ebdfCSignal.</p>
+<p>The annotations attribute contains a data frame with the individual annotations.</p>
+</div>
+<div id="annotation-data" class="section level3">
+<h3>Annotation data</h3>
+<p>The data for a single annotation encompass the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(CSignals$<span class="st">`</span><span class="dt">EDF Annotations</span><span class="st">`</span>$annotations, <span class="dt">max.level=</span><span class="dv">1</span>) </code></pre>
+<pre><code>## 'data.frame':    2 obs. of  5 variables:
+##  $ record       : int  1 2
+##  $ onset        : num  0 600
+##  $ duration     : num  NA NA
+##  $ isRecordStart: logi  FALSE FALSE
+##  $ annotations  : chr  &quot;RECORD START&quot; &quot;REC STOP&quot;</code></pre>
+<p>The record attribute refers to the data record that contains the annotation.</p>
+<p>The onset attribute contains the time of the annotation relative to the start of the recording.</p>
+<p>The duration attribute contains the duration of the annotated event.</p>
+<p>The isRecordStart indicates whether or not this annotation is the first one in a data record (and indicates the start time of the recording in that record).</p>
+<p>The annotations attribute contains one or more annotations associated with the onset and duration.</p>
+</div>
+</div>
+</div>
+<div id="acknowledgement" class="section level1">
+<h1>Acknowledgement</h1>
+<p>This package has used code from</p>
+<ul>
+<li><p>edf.R version 0.3 (27-11-2013),<br />copied from Fabian Feschet’s web link ‘feschet.fr/?p=11’ (has been removed)”</p></li>
+<li><p>the work of Henelius Andreas as of July 2015,<br /><a href="https://github.com/bwrc/edf" class="uri">https://github.com/bwrc/edf</a></p></li>
+</ul>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<ol style="list-style-type: decimal">
+<li><p>Specification of EDF<br /><a href="http://www.edfplus.info/specs/edf.html" class="uri">http://www.edfplus.info/specs/edf.html</a></p></li>
+<li><p>Specification of EDF+<br /><a href="http://www.edfplus.info/specs/edfplus.html" class="uri">http://www.edfplus.info/specs/edfplus.html</a></p></li>
+<li><p>Specification of EDF++<br /><a href="http://195.154.67.227/en/contribute/edf/" class="uri">http://195.154.67.227/en/contribute/edf/</a></p></li>
+<li><p>Specification of BDF<br />see ‘Which file format does BioSemi use’ at<br /><a href="http://www.biosemi.com/faq/file_format.htm" class="uri">http://www.biosemi.com/faq/file_format.htm</a></p></li>
+<li><p>Specification of BDF+ <a href="http://www.teuniz.net/edfbrowser/bdfplus%20format%20description.html">http://www.teuniz.net/edfbrowser/bdfplus%20format%20description.html</a></p></li>
+</ol>
+<p>Other useful EDF related sources can be found at:<br /><a href="http://www.edfplus.info/downloads/" class="uri">http://www.edfplus.info/downloads/</a></p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
