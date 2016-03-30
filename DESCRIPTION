@@ -1,8 +1,8 @@
 Package: edfReader
 Type: Package
 Title: Reading EDF(+) and BDF(+) Files
-Version: 1.0.0
-Date: 2016-02-02
+Version: 1.1.0
+Date: 2016-03-28
 Authors@R: person ("Jan", "Vis", email = "jan@visconsultancy.eu",
   role = c("aut", "cre"))
 Maintainer: Jan Vis <jan@visconsultancy.eu>
@@ -15,10 +15,11 @@ License: GPL-3
 LazyData: TRUE
 Imports:
 RoxygenNote: 5.0.1
+Depends: R (>= 3.2.0)
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2016-02-07 07:46:26 UTC; Jan
+Packaged: 2016-03-30 09:34:13 UTC; Jan
 Author: Jan Vis [aut, cre]
 Repository: CRAN
-Date/Publication: 2016-02-07 09:13:07
+Date/Publication: 2016-03-30 20:35:10

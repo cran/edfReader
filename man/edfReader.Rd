@@ -23,8 +23,8 @@ The objects returned by these functions are described in the package vignette.
 
  \tabular{lll}{
   Package \tab \verb{ } \tab edfReader \cr
-  Version \tab  \tab 1.0.0 \cr
-  Date \tab  \tab February 2, 2016 \cr
+  Version \tab  \tab 1.1.0 \cr
+  Date \tab  \tab March 28, 2016 \cr
   Licence \tab \tab GPL version 3 or newer \cr
   GitHub \tab  \tab https://github.com/Pisca46/edfReader \cr
   Author \tab  \tab Jan Vis, Vis Consultancy \cr
@@ -37,7 +37,7 @@ The objects returned by these functions are described in the package vignette.
 
    This package has used code from:
    \itemize{
-     \item edf.R version 0.3 (27-11-2013), http://feschet.fr/?p=11
+     \item edf.R version 0.3 (27-11-2013) from Fabien Feschet, http://data-auvergne.fr/cloud/index.php/s/WYmFEDZylFWJzNs
      \item the work of Henelius Andreas as of July 2015, https://github.com/bwrc/edf
    }
 }
