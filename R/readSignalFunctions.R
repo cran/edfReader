@@ -24,7 +24,8 @@
 #               - annotations data.frame with only one annotation per row (resolves a bug)
 #               - support sub second start specification in first data record (in + file)
 #               - signal names copied from sHeaders
-#  Apr16 - Version 1.1.1, no changes
+#   Apr16 - Version 1.1.1, no changes
+#   May17 - Version 1.1.2, no changes
 #
 # Suffixes (not always used):
 # HRT       : header reference time, i.e. time in sec relative to start of recording as specified in the header.
@@ -81,9 +82,9 @@
 #' @param recordStarts logical, if TRUE the empty annotations with the data record start time will be
 #'   included in the list of annotations.
 #'   If FALSE (the default), they will be omitted.
-#' @param mergeASignals logical, if TRUE all annotations will wil merged into one data frame. If FALSE
+#' @param mergeASignals logical, if TRUE all annotations will be merged into one data frame. If FALSE
 #'   there will be one data frame per annotation signal.
-#' @param simplify logical, if TRUE and if there is only one signal read, the signal itsels is returned
+#' @param simplify logical, if TRUE and if there is only one signal read, the signal itself is returned
 #'   (in stead of a list with that signal as the only one object).
 #'   If FALSE, this simplification is not performed.
 #' @return Either a list of one or more signals or a single signal.
