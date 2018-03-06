@@ -22,7 +22,7 @@ summary (CHdr$sHeader)
 
 ## ------------------------------------------------------------------------
 ASignals <- readEdfSignals (AHdr)
-ASignals
+summary (ASignals)
 
 ## ------------------------------------------------------------------------
 DSignals <- readEdfSignals (DHdr)
@@ -30,15 +30,15 @@ DSignals
 
 ## ------------------------------------------------------------------------
 DSignalsF <- readEdfSignals (DHdr, fragments = TRUE)
-DSignalsF
+summary (DSignalsF)
 
 ## ------------------------------------------------------------------------
 CSignals8 <- readEdfSignals (CHdr, signals=c(8, "8", "sine 8.5 Hz"))
-CSignals8
+summary (CSignals8)
 
 ## ------------------------------------------------------------------------
 ASignalsPeriod    <- readEdfSignals (AHdr, from=0.7, till=1.8)
-ASignalsPeriod
+summary (ASignalsPeriod)
 
 ## ------------------------------------------------------------------------
 CSignals <- readEdfSignals (CHdr)
@@ -53,34 +53,41 @@ summary (FDSignals$`sine 8.5 Hz`)         # note the "`" quotes for a name with 
 
 ## ------------------------------------------------------------------------
 CSignals$`EDF Annotations`
-summary(ASignalsPeriod$`EDF Annotations`)
 
 ## ------------------------------------------------------------------------
 format (AHdr$startTime, format="%Y-%m-%d %H:%M:%OS3",  usetz = FALSE)
+
+## ------------------------------------------------------------------------
 ASignalsPlusStartTimes <- readEdfSignals(AHdr, signals='EDF Annotations-1', recordStarts=TRUE)
-annots <- ASignalsPlusStartTimes$annotations
-annots[annots$isRecordStart==TRUE,'onset'][1]
+ASignalsPlusStartTimes$recordStartTimes$startTime[1]
 
 ## ------------------------------------------------------------------------
-str (CHdr,  max.level=1)
+str1 <- function (x) str (x, max.level = 1)
 
 ## ------------------------------------------------------------------------
-str (CHdr$sHeader, max.level=1)
+str1 (CHdr)
 
 ## ------------------------------------------------------------------------
-str(CSignals$pulse, max.level=1) 
+str1 (CHdr$sHeader)
 
 ## ------------------------------------------------------------------------
-str(FDSignals$`sine 8.5 Hz`, max.level=1) 
+str1 (CSignals$pulse) 
 
 ## ------------------------------------------------------------------------
-str(FDSignals$`sine 8.5 Hz`$fragments[[1]], max.level=1) 
+str1 (FDSignals$`sine 8.5 Hz`) 
 
 ## ------------------------------------------------------------------------
-str(ASignals$`EDF Annotations`, max.level=1) 
+str1 (FDSignals$`sine 8.5 Hz`$fragments[[1]]) 
 
 ## ------------------------------------------------------------------------
-str(ASignals$`EDF Annotations`$annotations, max.level=1) 
+ASignals2 <- readEdfSignals (AHdr, recordStarts=TRUE)
+str1 (ASignals2$`EDF Annotations`) 
+
+## ------------------------------------------------------------------------
+str1 (ASignals2$`EDF Annotations`$annotations) 
+
+## ------------------------------------------------------------------------
+str1 (ASignals2$`EDF Annotations`$recordStartTimes) 
 
 ## ---- fig.width=7.2, fig.height=2.5--------------------------------------
 plotEdfSignals <- function (signals,labels, from=0, till=Inf) {
