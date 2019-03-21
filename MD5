@@ -1,6 +1,6 @@
-aeca62d0f11dee63a2367e0fa87731ad *DESCRIPTION
+7cc9d7746fcd80513473855ab102d82d *DESCRIPTION
 6d9c05c200420077b9b18d824c60bb04 *NAMESPACE
-0de2df00de9509d5582dabd2c472e6ba *NEWS.md
+6cf48d92c0b36bb3ac3f843e429d16b7 *NEWS.md
 ac8c5ec376becbda42cd5485f39d0b70 *R/edfReader.R
 a09148ac0df8436a419cf5e0793aff0f *R/misc.R
 fbb5276f405cf7d5bb7b0f1d85430e50 *R/numeric.R
@@ -8,10 +8,11 @@ b4726ab9271b4665083624538ad4b466 *R/printSupport.R
 6450dce9681fbea4175c69fde8de32ad *R/readHeaderFunctions.R
 2338f50a44007e6bbae9e6b98c4e737c *R/readSignalFunctions.R
 2dace3591600d2862b883b48942b83bf *R/s3functions.R
-f633cb500b8cc784dc383f28a12ac0f5 *build/vignette.rds
+8e12608a4725f8b6c8c8162db26470da *build/vignette.rds
+8298e9a6a38937034c6591b2d7132453 *inst/WORDLIST
 0c61c16b2004ac6fb6e022e15c178967 *inst/doc/edfReaderVignette.R
-c7867e3f06d8f39d65f3e734a1047bd5 *inst/doc/edfReaderVignette.Rmd
-fa56ebe0584949da0beedb020b2db292 *inst/doc/edfReaderVignette.html
+4a052a17b96968449a8f0bc9681df5d8 *inst/doc/edfReaderVignette.Rmd
+1c3eea994fbfbc4ba36f5d67dde39ef6 *inst/doc/edfReaderVignette.html
 d6ad47afdece1a6ea2e0ac856cbf70ba *inst/extdata/bdfPlusC.bdf
 93c2d68c324566ecc110e28b039be15c *inst/extdata/bdfPlusC_annotations.txt
 9362918994f0894def72c354fb87d115 *inst/extdata/bdfPlusC_data.txt
@@ -33,7 +34,7 @@ e1c82e222599f497e8dc6cea9d224ed3 *man/edfReader.Rd
 6db9daa5d67cea3889fd1f152494c0b6 *tests/testthat.R
 5d09d96dd008060dd941c48bab2171c2 *tests/testthat/test10_CSampleFiles.R
 b0eaecbf305c18f4321c505e40476543 *tests/testthat/test11_DSampleFiles.R
-c2e30fcdc8ad1506e22f168405f4a2e6 *tests/testthat/test20_FromTill.R
+7309cb57681850f5b2fda98f1bfbfe89 *tests/testthat/test20_FromTill.R
 206db4712c0349630dd591a33e1c4b5b *tests/testthat/test21_ReadEdfSignalsParams.R
 54b89990f271a1b7b72f099353c761ff *tests/testthat/test30_s3functions.R
 ad82d289213a27e8a5da991ebdf98d25 *tests/testthat/test31_s3functions.R
@@ -64,4 +65,4 @@ b75979de21269b4e13c54e60d3c718ff *tests/testthat/test31_s3functions_RefOut/DSign
 bbc7edd1d3340677fb5df63c6b0febce *tests/testthat/test31_s3functions_RefOut/DSignalsF_S4_S.txt
 977390be1f31a5001740165a81442934 *tests/testthat/test31_s3functions_RefOut/DSignals_S4_P.txt
 6a9eaf1b493757068635893c92756f50 *tests/testthat/test31_s3functions_RefOut/DSignals_S4_S.txt
-c7867e3f06d8f39d65f3e734a1047bd5 *vignettes/edfReaderVignette.Rmd
+4a052a17b96968449a8f0bc9681df5d8 *vignettes/edfReaderVignette.Rmd

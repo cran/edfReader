@@ -49,7 +49,7 @@ Part of this list is a data frame of class 'ebdfSHeader' which contains the sign
 
 In this chapter and the next, the EDF data read by edfReader is explained by using the S3 print() and summary() functions. The summary() provides somewhat more information than the print() function. In general, print() doesn't contain internal EDF/BDF file data (like, e.g. the EDF signal number). This type of data is displayed with a summary() only.
 
-Both print() and summary() may be used with a maxRows and/or file parameter. 'maxRows' will limit the number of rows in tables, its defult value = 24. 'file' will redirect the output to the file specified.
+Both print() and summary() may be used with a maxRows and/or file parameter. 'maxRows' will limit the number of rows in tables, its default value = 24. 'file' will redirect the output to the file specified.
 
 ## 2.2 The ebdfHeader
 A file header can be read with readEdfHeader()
@@ -207,7 +207,7 @@ ASignalsPlusStartTimes <- readEdfSignals(AHdr, signals='EDF Annotations-1', reco
 ASignalsPlusStartTimes$recordStartTimes$startTime[1]
 ```
 
-By the same token, the onset for annotations is relative to this R startTime (in an EDF+/BDF+ file the onset is relative to the startdate and starttime in the EDF/BDF header).
+By the same token, the onset for annotations is relative to this R startTime (in an EDF+/BDF+ file the onset is relative to the startDate and startTime in the EDF/BDF header).
 
 ## 4.2 Samples and time
 As usual, a recording starts at time 0 (relative to the recording startTime) and with sample 1.
@@ -301,7 +301,7 @@ For any signal object and any fragment:
 
 # 5. Object details
 ## 5.1 Introduction
-In this chapter the strucnture of the R EDF/BDF objects is explained by using the str(), or more often, the str1() function as defined below.
+In this chapter the structure of the R EDF/BDF objects is explained by using the str(), or more often, the str1() function as defined below.
 ```{r}
 str1 <- function (x) str (x, max.level = 1)
 ```
@@ -371,12 +371,12 @@ str1 (FDSignals$`sine 8.5 Hz`$fragments[[1]])
 ```
 The fromSample attribute contains the sample number of the first sample in this fragment (as if it were a continuous recording). The start attribute the sample time for this sample.
 
-The recordingStart attribute contains the start of the recording as specified in the data racored (minus the start time of the first data record, see the section 'The start time').
+The recordingStart attribute contains the start of the recording as specified in the data racorded (minus the start time of the first data record, see the section 'The start time').
 
 The 'signal' attribute contains the fragment's sample values. These may be physical values (the default) or digital values (see above).
 
 ### 5.3.3 Annotation signals
-#### 5.3.3.1 The annoration signal
+#### 5.3.3.1 The annotation signal
 The data for annotation signal objects of class 'ebdfASignal' encompass the following:
 ```{r}
 ASignals2 <- readEdfSignals (AHdr, recordStarts=TRUE)
@@ -405,7 +405,7 @@ The end attribute equals the sum of the onset plus the duration.
 
 The fromSignal attribute, if present, refers to the signal that contains the annotation. This attributed is present only if the annotations from different signals were merged into one ‘ebdfASignal’ object. 
 
-NOTE \ \ \ \ \ \ In case readEdfSignals is used with a from and till parameter only those annotatins are included for which the onset is within the [from, till] interval or - in case the duration is specified - the periodd [onset, onset+duration] overlaps with this interval.
+NOTE \ \ \ \ \ \ In case readEdfSignals is used with a from and till parameter only those annotations are included for which the onset is within the [from, till] interval or - in case the duration is specified - the period [onset, onset+duration] overlaps with this interval.
 
 ### 5.3.3.3 The record start times
 In an EDF+/BDF+ file the start of the recording of a data recorded is specified in the (first) annotation signal. When read with recordStarts=TRUE, these start times are included in the recordStartTimes data frame.
@@ -413,7 +413,7 @@ In an EDF+/BDF+ file the start of the recording of a data recorded is specified 
 ```{r}
 str1 (ASignals2$`EDF Annotations`$recordStartTimes) 
 ```
-NOTE \ \ \ \ \ \ The startTime is relative to the R startTime, i.e. the start of the recording. (in an EDF+/BDF+ file the onset is relative to the startdate and starttime in the EDF+/BDF+ header).
+NOTE \ \ \ \ \ \ The startTime is relative to the R startTime, i.e. the start of the recording. (in an EDF+/BDF+ file the onset is relative to the startDate and startTime in the EDF+/BDF+ header).
 
 # 6. Next step: a  quick look
 One of the the first things you may want to do with the imported signals is to have look at them.
